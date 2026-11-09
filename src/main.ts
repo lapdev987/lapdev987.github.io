@@ -24,6 +24,34 @@ let arrivalTimer: ReturnType<typeof setTimeout> | undefined;
 let lastFocused: HTMLElement | null = null;
 let dialogWasTour = false;
 let assetsReady = false;
+let joystickPointerId: number | null = null;
+let joystickInput = { x: 0, y: 0 };
+
+function resetJoystick() {
+  joystickPointerId = null;
+  joystickInput = { x: 0, y: 0 };
+  const thumb = document.getElementById("joystick-thumb");
+  if (thumb) {
+    thumb.style.left = "50%";
+    thumb.style.top = "50%";
+  }
+}
+
+function updateJoystick(event: PointerEvent) {
+  const joystick = $("driving-joystick");
+  const thumb = $("joystick-thumb");
+  const rect = joystick.getBoundingClientRect();
+  const travel = rect.width / 2 - thumb.offsetWidth / 2;
+  if (travel <= 0) return;
+  let x = (event.clientX - (rect.left + rect.width / 2)) / travel;
+  let y = (event.clientY - (rect.top + rect.height / 2)) / travel;
+  const length = Math.hypot(x, y);
+  if (length > 1) { x /= length; y /= length; }
+  if (Math.hypot(x, y) < 0.1) { x = 0; y = 0; }
+  joystickInput = { x, y };
+  thumb.style.left = `${50 + x * travel / rect.width * 100}%`;
+  thumb.style.top = `${50 + y * travel / rect.height * 100}%`;
+}
 
 function renderCard(card: ResumeCard) {
   const article = document.createElement("article");
@@ -89,6 +117,7 @@ function markVisited(index: number) {
 }
 
 function openSection(index: number, jump = false) {
+  resetJoystick();
   if (resumeDialog.open) resumeDialog.close();
   if (jump) {
     start(false);
@@ -132,7 +161,7 @@ function closeSection() {
 
 function openResume() {
   if (detailDialog.open) detailDialog.close();
-  keys.clear(); car.speed = 0;
+  keys.clear(); resetJoystick(); car.speed = 0;
   dialogWasTour = tour;
   lastFocused = document.activeElement as HTMLElement;
   resumeDialog.showModal();
@@ -171,6 +200,7 @@ function reset() {
   if (detailDialog.open) detailDialog.close();
   if (resumeDialog.open) resumeDialog.close();
   keys.clear();
+  resetJoystick();
   ignoredStop = null;
   tour = false; tourT = 0.03;
   car = world.at(tourT);
@@ -266,7 +296,9 @@ function tick(time: number) {
         reverse: keys.has("ArrowDown") || keys.has("KeyS"),
         left: keys.has("ArrowLeft") || keys.has("KeyA"),
         right: keys.has("ArrowRight") || keys.has("KeyD"),
-        brake: keys.has("Space")
+        brake: keys.has("Space"),
+        throttle: joystickPointerId === null ? undefined : -joystickInput.y,
+        steering: joystickPointerId === null ? undefined : joystickInput.x
       }, delta);
     }
     if (ignoredStop !== null && distanceTo(car, world.stops[ignoredStop]) > 6.5) ignoredStop = null;
@@ -314,7 +346,7 @@ function setupControls() {
     } catch { showArrival("Fullscreen isn’t available in this browser view."); }
   });
   $("credits-button").addEventListener("click", () => {
-    keys.clear();
+    keys.clear(); resetJoystick();
     lastFocused = document.activeElement as HTMLElement;
     creditsDialog.showModal();
   });
@@ -363,24 +395,32 @@ function setupControls() {
     }
   });
   window.addEventListener("keyup", event => keys.delete(event.code));
-  window.addEventListener("blur", () => keys.clear());
-  document.addEventListener("visibilitychange", () => keys.clear());
-  document.querySelectorAll<HTMLButtonElement>("[data-key]").forEach(button => {
-    button.addEventListener("pointerdown", event => {
-      event.preventDefault();
-      button.setPointerCapture(event.pointerId);
-      tour = false; updateTourButton();
-      keys.add(button.dataset.key!);
-      button.classList.add("pressed");
-    });
-    const release = () => { keys.delete(button.dataset.key!); button.classList.remove("pressed"); };
-    button.addEventListener("pointerup", release);
-    button.addEventListener("pointercancel", release);
-    button.addEventListener("lostpointercapture", release);
+  window.addEventListener("blur", () => { keys.clear(); resetJoystick(); });
+  document.addEventListener("visibilitychange", () => { keys.clear(); resetJoystick(); });
+  const joystick = $("driving-joystick");
+  joystick.addEventListener("pointerdown", event => {
+    const pointer = event as PointerEvent;
+    if (joystickPointerId !== null) return;
+    pointer.preventDefault();
+    joystickPointerId = pointer.pointerId;
+    joystick.setPointerCapture(pointer.pointerId);
+    tour = false; updateTourButton();
+    updateJoystick(pointer);
   });
+  joystick.addEventListener("pointermove", event => {
+    const pointer = event as PointerEvent;
+    if (pointer.pointerId === joystickPointerId) updateJoystick(pointer);
+  });
+  const releaseJoystick = (event: PointerEvent) => {
+    if (event.pointerId === joystickPointerId) resetJoystick();
+  };
+  joystick.addEventListener("pointerup", event => releaseJoystick(event as PointerEvent));
+  joystick.addEventListener("pointercancel", event => releaseJoystick(event as PointerEvent));
+  joystick.addEventListener("lostpointercapture", event => releaseJoystick(event as PointerEvent));
   window.addEventListener("resize", () => {
     world.resize(); positionLabels();
     $("touch-controls").hidden = !driving || window.innerWidth >= 700;
+    resetJoystick();
   });
   window.addEventListener("pagehide", event => { if (!event.persisted) world.dispose(); });
 }

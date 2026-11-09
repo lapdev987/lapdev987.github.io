@@ -64,11 +64,14 @@
           </svg>
           <div class="map-caption">Choose a chapter to jump there.</div>
         </aside>
-        <div id="touch-controls" class="touch-controls" aria-label="Touch driving controls" hidden>
-          <button data-key="ArrowLeft" aria-label="Steer left">←</button>
-          <div class="touch-pedals"><button data-key="ArrowUp" aria-label="Accelerate">↑</button><button data-key="ArrowDown" aria-label="Reverse">↓</button></div>
-          <button data-key="ArrowRight" aria-label="Steer right">→</button>
-          <button data-key="Space" class="touch-brake" aria-label="Brake">■</button>
+        <div id="touch-controls" class="touch-controls" role="group" aria-label="Driving joystick. Push up to accelerate, down to reverse, and left or right to steer." hidden>
+          <div id="driving-joystick" class="driving-joystick">
+            <span class="joystick-direction joystick-up" aria-hidden="true">+</span>
+            <span class="joystick-direction joystick-down" aria-hidden="true">−</span>
+            <span class="joystick-direction joystick-left" aria-hidden="true">‹</span>
+            <span class="joystick-direction joystick-right" aria-hidden="true">›</span>
+            <span id="joystick-thumb" class="joystick-thumb" aria-hidden="true"></span>
+          </div>
         </div>
       </main>
       <footer class="footer">

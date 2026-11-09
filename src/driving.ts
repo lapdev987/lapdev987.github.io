@@ -1,7 +1,7 @@
 import { GROUND_TILE_SIZE, MAX_STEERING, WORLD_BOUNDS, WHEELBASE } from "./scene-config";
 
 export interface CarState { x: number; z: number; heading: number; speed: number; steering: number }
-export interface DrivingInput { forward: boolean; reverse: boolean; left: boolean; right: boolean; brake: boolean }
+export interface DrivingInput { forward: boolean; reverse: boolean; left: boolean; right: boolean; brake: boolean; throttle?: number; steering?: number }
 
 export const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 export const distanceTo = (car: Pick<CarState, "x" | "z">, point: { x: number; z: number }) =>
@@ -10,13 +10,13 @@ export const distanceTo = (car: Pick<CarState, "x" | "z">, point: { x: number; z
 export function updateCar(car: CarState, input: DrivingInput, delta: number): CarState {
   const dt = clamp(delta, 0, 0.05);
   let speed = car.speed;
-  if (input.forward) speed += 12 * dt;
-  if (input.reverse) speed -= 12 * dt;
-  if (!input.forward && !input.reverse) speed *= Math.exp(-1.3 * dt);
+  const throttle = clamp(input.throttle ?? Number(input.forward) - Number(input.reverse), -1, 1);
+  if (throttle !== 0) speed += 12 * throttle * dt;
+  else speed *= Math.exp(-1.3 * dt);
   if (input.brake) speed *= Math.exp(-12 * dt);
   speed = clamp(speed, -7, 17);
   if (Math.abs(speed) < 0.035) speed = 0;
-  const steering = Number(input.left) - Number(input.right);
+  const steering = clamp(input.steering ?? Number(input.left) - Number(input.right), -1, 1);
   const wheelAngle = car.steering + (steering * MAX_STEERING - car.steering) * (1 - Math.exp(-10 * dt));
   const heading = car.heading + steering * 1.65 * dt * clamp(speed / 5, -1, 1);
   const x = car.x + Math.sin(heading) * speed * dt;

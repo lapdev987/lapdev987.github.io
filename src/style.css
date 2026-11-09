@@ -78,11 +78,14 @@ kbd { font: inherit; font-size: .5rem; min-width: 17px; height: 19px; display: i
 .template-notice { position: fixed; top: 92px; right: 3.5%; font-size: .5625rem; letter-spacing: .14em; color: #b49d8c; z-index: 3; }
 .arrival { position: fixed; left: 50%; bottom: 130px; transform: translateX(-50%); background: #34312ce8; border: 1px solid #bc94723d; color: #edddcc; padding: 12px 22px; border-radius: 6px; font-size: .9375rem; z-index: 5; }
 .boundary-warning { position: fixed; left: 50%; bottom: 112px; transform: translateX(-50%); z-index: 5; max-width: calc(100% - 36px); padding: 10px 16px; border: 1px solid #d7a27170; border-radius: 5px; background: #2f2822df; color: #e5bc95; font-size: .875rem; line-height: 1.5; text-align: center; pointer-events: none; }
-.touch-controls { position: fixed; z-index: 4; left: 17px; bottom: 123px; display: flex; align-items: center; gap: 6px; pointer-events: auto; }
-.touch-controls button { width: 43px; height: 43px; background: #29282cb0; border: 1px solid #b3988040; border-radius: 7px; font-size: 1.2rem; touch-action: none; user-select: none; }
-.touch-controls button.pressed, .touch-controls button:active { background: #a56c48; }
-.touch-pedals { display: flex; flex-direction: column; gap: 6px; }
-.touch-brake { font-size: .8125rem !important; }
+.touch-controls { position: fixed; z-index: 4; left: 20px; bottom: 112px; width: 142px; height: 142px; pointer-events: auto; }
+.driving-joystick { position: relative; width: 100%; height: 100%; border: 1px solid #ead3bd45; border-radius: 50%; background: radial-gradient(circle, #d6b79c18 0 42%, #d6b79c0c 43% 68%, #15171978 69%); box-shadow: inset 0 1px 18px #090a0b50, 0 6px 22px #090a0b38; touch-action: none; user-select: none; }
+.joystick-thumb { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; transform: translate(-50%, -50%); border: 1px solid #f1d4b366; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #d99468, #985c3d 78%); box-shadow: 0 3px 12px #08090a80, inset 0 1px 3px #f4d8c26e; pointer-events: none; }
+.joystick-direction { position: absolute; color: #eee0d266; font-size: .8125rem; line-height: 1; pointer-events: none; }
+.joystick-up { top: 10px; left: 50%; transform: translateX(-50%); }
+.joystick-down { bottom: 10px; left: 50%; transform: translateX(-50%); }
+.joystick-left { left: 11px; top: 50%; transform: translateY(-50%); }
+.joystick-right { right: 11px; top: 50%; transform: translateY(-50%); }
 dialog { color: #eee3d7; border: 1px solid #c29c7945; border-radius: 12px; background: #292a2bf7; padding: 28px; box-shadow: 0 20px 80px #00000055; max-height: calc(100svh - 40px); overflow: auto; }
 dialog::backdrop { background: #0c0e125c; backdrop-filter: blur(7px); }
 .detail-dialog { width: 490px; max-width: calc(100% - 30px); margin: auto 4% auto auto; }
@@ -172,8 +175,8 @@ dialog h2 { font-size: 2.5rem; font-weight: 500; letter-spacing: -.04em; margin:
   .map-title { display: block; font-size: .4375rem; }
   .map-title span:last-child { display: block; margin-top: 5px; }
   .map-caption { display: none; }
-  .touch-controls { bottom: 132px; }
-  .touch-controls button { width: 39px; height: 39px; }
+  .touch-controls { left: 15px; bottom: 116px; width: 128px; height: 128px; }
+  .joystick-thumb { width: 50px; height: 50px; }
   .arrival { bottom: 233px; max-width: calc(100% - 35px); font-size: .875rem; text-align: center; white-space: normal; }
   .boundary-warning { bottom: 236px; width: calc(100% - 36px); }
   dialog { padding: 22px; max-height: calc(100svh - 28px); }

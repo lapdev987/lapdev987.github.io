@@ -18,6 +18,15 @@ describe("driving", () => {
     expect(car.z).toBeLessThan(0);
     expect(car.heading).toBeLessThan(0);
   });
+  test("analog throttle and steering respond proportionally", () => {
+    const partial = updateCar({ ...initial, speed: 5 }, { ...idle, throttle: 0.5, steering: 0.5 }, 0.05);
+    const full = updateCar({ ...initial, speed: 5 }, { ...idle, throttle: 1, steering: 1 }, 0.05);
+    expect(partial.speed).toBeCloseTo(5.3);
+    expect(partial.steering).toBeGreaterThan(0);
+    expect(partial.steering).toBeLessThan(full.steering);
+    expect(partial.heading).toBeGreaterThan(0);
+    expect(partial.heading).toBeLessThan(full.heading);
+  });
   test("brakes and clamps frame time", () => {
     expect(updateCar({ ...initial, speed: 10 }, { ...idle, brake: true }, 0.05).speed).toBeLessThan(6);
     expect(updateCar(initial, { ...idle, forward: true }, 100).speed).toBeCloseTo(0.6);
