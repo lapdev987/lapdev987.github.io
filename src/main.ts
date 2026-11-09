@@ -298,7 +298,7 @@ function tick(time: number) {
         right: keys.has("ArrowRight") || keys.has("KeyD"),
         brake: keys.has("Space"),
         throttle: joystickPointerId === null ? undefined : -joystickInput.y,
-        steering: joystickPointerId === null ? undefined : joystickInput.x
+        steering: joystickPointerId === null ? undefined : -joystickInput.x
       }, delta);
     }
     if (ignoredStop !== null && distanceTo(car, world.stops[ignoredStop]) > 6.5) ignoredStop = null;
