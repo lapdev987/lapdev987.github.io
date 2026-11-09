@@ -1,0 +1,21 @@
+{
+  "name": "drivefolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "three": "0.174.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.174.0",
+    "typescript": "5.7.3",
+    "vite": "6.1.0",
+    "vite-plugin-singlefile": "2.2.0"
+  }
+}

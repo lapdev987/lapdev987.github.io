@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#302d2d" />
+    <meta name="description" content="A ground-level, drivable résumé. A realistic car, open asphalt, dawn light, and a story at every stop." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%23b97a56'/%3E%3Cpath d='M10 28 28 10M13 10h15v15' fill='none' stroke='%23f3ece3' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <title>Drivefolio — A résumé in motion</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="world" aria-label="Realistic car on textured asphalt with tall résumé stop signs. Drag to orbit; scroll to zoom."></canvas>
+      <div class="scene-shade"></div>
+      <div id="stop-labels" aria-label="Résumé destinations"></div>
+      <header class="header">
+        <a class="brand" href="#" id="home-link" aria-label="Drivefolio home">
+          <svg viewBox="0 0 44 24" aria-hidden="true"><path d="M3 16v-5l5-2 5-6h18l6 7 4 2v6h-4a5 5 0 0 0-10 0H16a5 5 0 0 0-10 0H3Z" fill="currentColor"/><path d="m15 6-4 5h11V6Zm10 0v5h9l-4-5Z" fill="#302d2d"/><circle cx="11" cy="18" r="3.3" fill="currentColor"/><circle cx="32" cy="18" r="3.3" fill="currentColor"/></svg>
+          <div><div class="brand-name">drivefolio.</div><div class="brand-subtitle">A RÉSUMÉ IN MOTION</div></div>
+        </a>
+        <nav class="desktop-nav" aria-label="Portfolio sections">
+          <button data-section="0"><small>01</small> About</button>
+          <button data-section="1"><small>02</small> Experience</button>
+          <button data-section="2"><small>03</small> Projects</button>
+          <button data-section="3"><small>04</small> Skills</button>
+          <button data-section="4"><small>05</small> Education</button>
+          <button data-section="5"><small>06</small> Contact</button>
+        </nav>
+        <button id="resume-button" class="outline-button"><span aria-hidden="true">☷</span> View résumé</button>
+      </header>
+      <main>
+        <section id="hero" class="hero">
+          <div class="eyebrow"><span class="live-dot"></span> THE OPEN-WORLD RÉSUMÉ</div>
+          <h1>A story worth<br />driving through.</h1>
+          <p class="hero-copy">Take the wheel. Find a sign.<br />Discover the work behind the journey.</p>
+          <div class="hero-actions">
+            <button id="start-button" class="primary-button">Take the wheel <span aria-hidden="true">↗</span></button>
+            <button id="tour-button" class="text-button">Take a guided drive <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="hero-note">A real car. A little open road. Six chapters to explore.</div>
+        </section>
+        <section id="trip-info" class="trip-info" hidden>
+          <div class="eyebrow"><span class="live-dot"></span> THE NEXT CHAPTER</div>
+          <h1>Follow your curiosity.</h1>
+          <p id="trip-description">Drive toward a tall sign.<br />A chapter opens when you get close.</p>
+          <button id="tour-toggle" class="text-button">Start guided drive <span aria-hidden="true">→</span></button>
+        </section>
+        <div class="scene-caption" id="car-caption">
+          <div class="car-name">FERRARI 458 ITALIA</div>
+          <div class="car-meta">ROSSO RED / DAWN EDITION</div>
+        </div>
+        <div id="arrival" class="arrival" role="status" aria-live="polite" hidden></div>
+        <div id="boundary-warning" class="boundary-warning" role="status" aria-live="polite" hidden>
+          Outside the résumé area. Keep exploring—drive back to find the stops.
+        </div>
+        <aside class="map-card" aria-label="Trip map">
+          <div class="map-title"><span>DESTINATIONS</span><span id="visited-count">0 / 6 stops</span></div>
+          <svg id="minimap" viewBox="0 0 180 100" aria-label="Stops and car location">
+            <path id="map-road-border" fill="none" stroke="#6c5c5010" stroke-width="8" />
+            <path id="map-road" fill="none" stroke="#b2937530" stroke-width="1" stroke-dasharray="2 5" />
+            <g id="map-stops"></g>
+            <circle id="map-car-halo" r="7" fill="#d7a474" opacity=".2"/>
+            <circle id="map-car" r="3.5" fill="#f4d5b5" stroke="#5b4637" stroke-width="1.5"/>
+          </svg>
+          <div class="map-caption">Choose a chapter to jump there.</div>
+        </aside>
+        <div id="touch-controls" class="touch-controls" aria-label="Touch driving controls" hidden>
+          <button data-key="ArrowLeft" aria-label="Steer left">←</button>
+          <div class="touch-pedals"><button data-key="ArrowUp" aria-label="Accelerate">↑</button><button data-key="ArrowDown" aria-label="Reverse">↓</button></div>
+          <button data-key="ArrowRight" aria-label="Steer right">→</button>
+          <button data-key="Space" class="touch-brake" aria-label="Brake">■</button>
+        </div>
+      </main>
+      <footer class="footer">
+        <div class="drive-controls">
+          <div class="control-group"><div class="key-row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div><span>CAR CONTROLS</span></div>
+          <div class="control-group"><span class="mouse-icon" aria-hidden="true">↔</span><span>DRAG CAMERA</span></div>
+          <div class="control-group"><span class="mouse-icon" aria-hidden="true">⌖</span><span>SCROLL ZOOM</span></div>
+          <div class="control-group"><div class="key-row"><kbd>SPACE</kbd></div><span>BRAKE</span></div>
+        </div>
+        <div class="footer-tools">
+          <button id="camera-button" class="round-button" aria-label="Toggle follow and orbit camera"><span class="tool-icon" aria-hidden="true">◉</span><span id="camera-label" class="tool-label">FOLLOW CAM</span></button>
+          <button id="reset-button" class="round-button" aria-label="Reset car to starting point" title="Reset car (R)"><span class="tool-icon" aria-hidden="true">↺</span><span class="tool-label">RESET</span></button>
+          <button id="fullscreen-button" class="round-button" aria-label="Toggle fullscreen"><span class="tool-icon" aria-hidden="true">⛶</span><span class="tool-label">FULLSCREEN</span></button>
+        </div>
+      </footer>
+      <div class="speed-readout"><span class="speed-dot"></span><span id="speed">PARKED & READY</span></div>
+      <button id="credits-button" class="credits-button">Model & environment credits</button>
+      <div class="template-notice">SAMPLE RÉSUMÉ / ADD YOUR STORY</div>
+      <aside id="graphics-warning" class="graphics-warning" role="status" hidden>
+        <div class="eyebrow">WEBGL 2 UNAVAILABLE</div>
+        <h2>This car needs a working 3D engine.</h2>
+        <p>This browser can’t create a WebGL 2 context. Open the downloaded HTML in Chrome, Edge, or Firefox with graphics acceleration enabled to see the realistic car and terrain.</p>
+        <p>The complete résumé is still available below.</p>
+        <button id="fallback-resume-button" class="primary-button">Read the résumé <span aria-hidden="true">↗</span></button>
+      </aside>
+      <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-title">
+        <div class="dialog-top"><span id="detail-eyebrow" class="eyebrow"></span><button id="close-detail" class="close-button" aria-label="Close section">✕</button></div>
+        <h2 id="detail-title"></h2>
+        <p id="detail-intro" class="detail-intro"></p>
+        <div id="detail-content"></div>
+        <div class="dialog-bottom"><span id="section-position"></span><button id="next-section" class="primary-button">Next stop <span aria-hidden="true">→</span></button></div>
+      </dialog>
+      <dialog id="resume-dialog" class="resume-dialog" aria-labelledby="resume-title">
+        <div class="dialog-top"><span class="eyebrow">THE FULL PICTURE</span><button id="close-resume" class="close-button" aria-label="Close résumé">✕</button></div>
+        <h2 id="resume-title"></h2>
+        <p id="resume-subtitle" class="detail-intro"></p>
+        <div class="template-callout">Replace the sample entries with your résumé in <code>src/resume.ts</code>.</div>
+        <div id="resume-content"></div>
+      </dialog>
+      <dialog id="credits-dialog" class="credits-dialog" aria-labelledby="credits-title">
+        <div class="dialog-top"><span class="eyebrow">THE DETAILS</span><button id="close-credits" class="close-button" aria-label="Close credits">✕</button></div>
+        <h2 id="credits-title">Made with great assets.</h2>
+        <p><strong>Ferrari 458 Italia</strong> by <a href="https://sketchfab.com/models/57bf6cc56931426e87494f554df1dab6" target="_blank" rel="noopener noreferrer">vicent091036</a>, distributed in <a href="https://github.com/mrdoob/three.js/blob/r174/examples/models/gltf/ferrari.glb" target="_blank" rel="noopener noreferrer">Three.js</a> under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>. Materials, lighting, camera, and animation adapted for this prototype.</p>
+        <p><strong>Asphalt 02</strong> and <strong>Kiara 1 Dawn</strong> by <a href="https://polyhaven.com" target="_blank" rel="noopener noreferrer">Poly Haven</a> / Greg Zaal. <a href="https://polyhaven.com/license" target="_blank" rel="noopener noreferrer">CC0</a>. Panorama resized for local use.</p>
+        <p>Three.js: MIT. Draco: Apache 2.0. All runtime assets are embedded. No affiliation with Ferrari or Faraday Future.</p>
+      </dialog>
+      <div id="loading" class="loading" role="status" aria-live="polite">
+        <div class="eyebrow">DRIVEFOLIO / DAWN EDITION</div>
+        <h2>Preparing the drive.</h2>
+        <div class="loading-line"></div>
+        <p id="loading-message">Loading the car, asphalt and dawn light…</p>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
